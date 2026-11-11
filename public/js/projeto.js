@@ -86,7 +86,8 @@
           ${ehMentor() ? `<a class="jm-voltar" href="/mentor.html">${icone('voltar')} Painel do mentor</a>` : `<a class="jm-voltar" href="/painel.html">${icone('voltar')} Meus projetos</a>`}
           <h1 style="margin:0">${esc(E.jornada.titulo)}</h1>
           <p class="nota">${ehMentor() && E.cliente ? 'Projeto de ' + esc(E.cliente.nome) + ' · ' : ''}${aprovados()} de ${total} módulos aprovados${E.orcamento ? ' · resumo do orçamento pronto' : ''}${E.papel === 'dono' ? (E.tem_mentor ? ' · compartilhado com mentor' : ' · sem mentor') : ''}</p>
-          ${E.papel === 'dono' ? `<p class="acoes jm-nao-imprimir"><button type="button" class="botao-secundario" id="jm-compartilhar">${icone('equipe')} ${E.tem_mentor ? 'Mentores do projeto' : 'Compartilhar com mentor'}</button></p>` : ''}
+          ${E.papel === 'dono' && E.exige_mentor && !E.tem_mentor ? `<p class="jm-aviso jm-nao-imprimir">${icone('info')} Neste projeto o seu mentor libera cada fase. Compartilhe com ele para começar.</p>` : ''}
+          ${E.papel === 'dono' ? `<p class="acoes jm-nao-imprimir"><button type="button" class="${E.exige_mentor && !E.tem_mentor ? '' : 'botao-secundario'}" id="jm-compartilhar">${icone('equipe')} ${E.tem_mentor ? 'Mentores do projeto' : 'Compartilhar com mentor'}</button></p>` : ''}
         </div>
       </section>
       <nav class="jm-trilha" aria-label="Módulos da jornada"><ol id="jm-trilha"></ol></nav>
@@ -321,7 +322,7 @@
     const painel = document.getElementById('jm-painel');
     const aviso = ehMentor()
       ? (l.status === 'aberto' ? 'Seu mentorado ainda está preenchendo este módulo.' : l.status === 'ajustes' ? 'Você pediu ajustes. O módulo volta para você quando for reenviado.' : l.status === 'aprovado' ? 'Módulo aprovado.' : '')
-      : l.status === 'enviado' ? 'Seu mentor está revisando este módulo. Você vê o retorno aqui quando ele responder.'
+      : l.status === 'enviado' ? (E.tem_mentor || !E.exige_mentor ? 'Seu mentor está revisando este módulo. Quando ele liberar, a fase fica aprovada.' : 'Este módulo espera a liberação de um mentor. Compartilhe o projeto com o seu mentor (botão no topo).')
         : l.status === 'aprovado' ? 'Módulo aprovado. As respostas ficam guardadas para consulta.' : '';
     painel.innerHTML = `
       <header class="jm-painel-topo">
@@ -343,7 +344,7 @@
         </div>`).join('')}
         ${pode ? `<footer class="jm-rodape">
           <span id="jm-salvo" class="nota" role="status"></span>
-          <button type="submit">${!E.tem_mentor ? 'Concluir módulo' : l.status === 'ajustes' ? 'Reenviar para o mentor' : 'Enviar para o mentor'} ${icone('enviado')}</button>
+          <button type="submit">${!E.exige_mentor ? 'Concluir módulo' : l.status === 'ajustes' ? 'Reenviar para o mentor' : 'Enviar para o mentor liberar'} ${icone('enviado')}</button>
         </footer>` : ''}
       </form>
       ${E.papel === 'mentor' && l.status === 'enviado' ? `
@@ -368,7 +369,7 @@
         try {
           await gravarAgora(true);
           await pedir({ acao: 'enviar', jornada_id: E.jornada.id, modulo: m.id });
-          toast(E.tem_mentor ? 'Módulo enviado ao seu mentor.' : 'Módulo concluído.');
+          toast(!E.exige_mentor ? 'Módulo concluído.' : E.tem_mentor ? 'Módulo enviado. Seu mentor vai revisar e liberar.' : 'Módulo enviado. Compartilhe o projeto com seu mentor para ele liberar esta fase.');
           const proximo = E.modulos.find((x) => x.status === 'aberto' || x.status === 'ajustes');
           if (proximo) selecionado = proximo.modulo;
           desenhar();
@@ -459,7 +460,7 @@
         <header class="jm-painel-topo"><div><h2>Orçamento do MVP</h2>
           <p class="nota">A plataforma lê as respostas de todos os módulos, lista as funcionalidades do MVP e calcula a estimativa de investimento e de prazo.</p></div>
           <span data-etiqueta="${liberado ? 'info' : 'neutro'}">${liberado ? 'Liberado' : 'Bloqueado'}</span></header>
-        ${liberado ? '' : `<p class="jm-aviso">${icone('info')} Falta aprovar: ${faltam.map((m) => esc(m.nome)).join(', ')}.</p>`}
+        ${liberado ? '' : `<p class="jm-aviso">${icone('info')} ${E.exige_mentor ? 'O mentor libera cada fase. Falta liberar' : 'Falta aprovar'}: ${faltam.map((m) => esc(m.nome)).join(', ')}.</p>`}
         ${liberado && E.papel === 'dono' ? `<p class="nota">O resumo é gratuito e pode ser gerado uma vez. Depois, se quiser, o documento detalhado em PDF.</p><div class="pagina-acoes">${botaoGerar('Gerar resumo do orçamento')}</div>` : ''}
         ${liberado && ehMentor() ? '<p class="nota">Todos os módulos estão aprovados. O resumo é gerado pelo seu mentorado.</p>' : ''}`;
       ligarGerar();

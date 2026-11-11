@@ -122,12 +122,13 @@ async function abrir(c, caminho) {
       return rota.fulfill({ status: 200, contentType: 'text/html', body: '<script>location.replace(' + JSON.stringify(destino) + ')</script>' });
     }
     if (u.pathname === '/login.html') return rota.fulfill({ status: 200, contentType: 'text/html', body: '<h1>login do app</h1>' });
+    if (u.pathname === '/api/sso' && req.method() === 'GET') return json({ ok: true, disponivel: c.ssoDisponivel !== false });
     if (u.pathname === '/api/sso') return json({ ok: true, url: APP + '/sso.html#token_hash=xyz&volta=%2Finicio.html' });
     if (u.pathname === '/api/jornada' && req.method() === 'GET') {
       if (!u.searchParams.get('id')) return json({ ok: true, definicao: DEFINICAO, jornada: null, projetos: [] });
       const mods = c.tabelas.jornada_modulos.length ? c.tabelas.jornada_modulos : DEFINICAO.map((m, i) => ({ modulo: m.id, status: i < 2 ? 'aprovado' : i === 2 ? 'enviado' : 'aberto', respostas: {} }));
       return json({
-        ok: true, papel: c.mentor && c.usuario === MEN ? 'mentor' : 'dono', tem_mentor: c.mentor, definicao: DEFINICAO,
+        ok: true, papel: c.mentor && c.usuario === MEN ? 'mentor' : 'dono', tem_mentor: c.mentor, exige_mentor: true, definicao: DEFINICAO,
         jornada: { id: J1, titulo: 'Agenda Salão', status: 'em_andamento' },
         modulos: mods.map((m) => ({ modulo: m.modulo, status: m.status, respostas: m.respostas || {}, comentario: null })),
         orcamento: c.orcamento, ...(c.usuario === MEN ? { cliente: { nome: 'Ana Souza', email: null } } : {})
@@ -206,6 +207,23 @@ test('login único: logado no app, abrir o mvp entra direto (código de uso úni
   assert.ok(await pagina.evaluate(() => localStorage.getItem('sb-teste-auth-token')));
   assert.equal((await ctx.cookies()).length, 0);
   assert.deepEqual(erros, []);
+  await ctx.close();
+});
+
+test('login único desligado no app (versão antiga ou sem MVP_URL): fica no login do mvp, nunca vai para o app', async () => {
+  const c = cenario({ logado: false, logadoNoApp: true });
+  c.ssoDisponivel = false;
+  const { pagina, ctx } = await abrir(c, '/painel.html');
+  await pagina.locator('#form-login').waitFor();
+  assert.match(pagina.url(), /^http:\/\/localhost:\d+\/entrar\.html/);
+  assert.equal(c.chamadas.filter((x) => x.app && x.caminho === '/sso.html').length, 0);
+  await ctx.close();
+});
+
+test('projeto do mvp sem mentor: avisa que o mentor libera cada fase e destaca o compartilhar', async () => {
+  const c = cenario();
+  const { pagina, ctx } = await abrir(c, '/projeto.html?id=' + J1);
+  await pagina.getByText('Neste projeto o seu mentor libera cada fase').waitFor();
   await ctx.close();
 });
 

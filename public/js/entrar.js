@@ -19,7 +19,7 @@
   const sessao = await getSessao();
   if (sessao) { SSO.entrou(); window.location.replace(destino); return; }
   // login único: logado no app? Entra direto (o app devolve para cá com ?sso=0 se não estiver)
-  if (!params.has('sso') && !params.get('error_description') && !/error_description/.test(window.location.hash) && SSO.pode()) {
+  if (!params.has('sso') && !params.get('error_description') && !/error_description/.test(window.location.hash) && (await SSO.disponivel())) {
     try { sessionStorage.setItem('cogit_entrar_modo', params.get('modo') || ''); } catch (_) {} // volta na mesma aba
     SSO.tentar(destino);
     return;

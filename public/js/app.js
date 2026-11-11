@@ -33,6 +33,18 @@ const SSO = {
     if (!CFG.appUrl) return false;
     try { return !sessionStorage.getItem(SSO.TENTADO) && !localStorage.getItem(SSO.SAIU); } catch (_) { return false; }
   },
+  // O app está com o login único ligado? (versão nova publicada e MVP_URL configurado). Se não estiver,
+  // ou não responder rápido, a pessoa fica no login daqui: nunca é mandada para o app e presa lá.
+  async disponivel() {
+    if (!SSO.pode()) return false;
+    const controle = new AbortController();
+    const timer = setTimeout(() => controle.abort(), 2500);
+    try {
+      const r = await fetch(CFG.appUrl + '/api/sso', { signal: controle.signal });
+      const d = await r.json();
+      return r.ok && d.disponivel === true;
+    } catch (_) { return false; } finally { clearTimeout(timer); }
+  },
   // Sem sessão aqui: pergunta ao app se a pessoa já está logada lá (ele devolve nos dois casos)
   tentar(volta) {
     try { sessionStorage.setItem(SSO.TENTADO, '1'); } catch (_) {}
@@ -264,7 +276,7 @@ function montarTopo(perfil) {
     <a class="marca" href="${perfil ? '/painel.html' : '/'}"><img src="/assets/marca/cogit-logo-grafite.svg" alt="CMK COGIT" width="104" height="29"><span>Jornada MVP</span></a>
     <nav class="nav" aria-label="Menu principal">
       ${perfil ? `
-        ${link('/painel.html', 'Meus projetos', 'projetos', true)}
+        ${link('/painel.html', 'Jornada MVP', 'projetos', true)}
         ${perfil.mentor ? link('/mentor.html', 'Painel do mentor', 'equipe', true) : ''}
         ${link('/perfil.html', esc((perfil.nome || 'Perfil').split(' ')[0]), 'perfil')}
         <button type="button" id="btn-sair">${icone('sair')}<span class="rotulo-longo">Sair</span></button>`

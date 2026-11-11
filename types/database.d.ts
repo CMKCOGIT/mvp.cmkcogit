@@ -19,7 +19,7 @@ export interface Database {
         id: string; user_id: string; status: 'pending' | 'approved' | 'rejected'; message: string | null;
         created_at: string; reviewed_by: string | null; reviewed_at: string | null;
       }>;
-      jornadas: Tabela<{ id: string; cliente_id: string; titulo: string; status: 'em_andamento' | 'concluida'; created_at: string; updated_at: string }>;
+      jornadas: Tabela<{ id: string; cliente_id: string; titulo: string; status: 'em_andamento' | 'concluida'; origem: 'app' | 'mvp'; created_at: string; updated_at: string }>;
       jornada_modulos: Tabela<{
         id: string; jornada_id: string; modulo: string; respostas: Json; status: 'aberto' | 'enviado' | 'ajustes' | 'aprovado';
         comentario: string | null; enviado_em: string | null; avaliado_em: string | null; avaliado_por: string | null;

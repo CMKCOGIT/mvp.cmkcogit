@@ -20,7 +20,8 @@
 
   async function carregar() {
     const [js, cfg] = await Promise.all([
-      db.from('jornadas').select('id, titulo, status, created_at, updated_at').eq('cliente_id', perfil.id).order('updated_at', { ascending: false }),
+      // só os projetos do mvp (os do app ficam no app: lá o fluxo é só do cliente)
+      db.from('jornadas').select('id, titulo, status, created_at, updated_at').eq('cliente_id', perfil.id).eq('origem', 'mvp').order('updated_at', { ascending: false }),
       db.from('mvp_pricing_config').select('price_brl, credit_valid_days').eq('id', 1).maybeSingle()
     ]);
     lista.removeAttribute('aria-busy');
@@ -89,7 +90,7 @@
     const caixa = document.getElementById('caixa-mentor');
     caixa.innerHTML = perfil.mentor
       ? `<h2>Painel do mentor</h2><p>Veja os projetos que seus mentorados compartilharam com você.</p><p class="acoes"><a class="botao-secundario" href="/mentor.html">${icone('equipe')} Abrir painel do mentor</a></p>`
-      : `<h2>Tem um mentor?</h2><p class="nota">Compartilhe um projeto com ele pelo e-mail da conta dele. Ele comenta e aprova cada módulo.</p>`;
+      : `<h2>Seu mentor libera cada fase</h2><p class="nota">Compartilhe cada projeto com o seu mentor pelo e-mail da conta dele. Ele revisa cada módulo e libera a fase; com todas liberadas, o resumo do orçamento é gerado.</p>`;
   }
 
   lista.addEventListener('click', async (ev) => {
