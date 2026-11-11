@@ -1,7 +1,7 @@
 // =====================================================================
 // entrar.js — entrar e criar conta. Iguais para todos: o papel (cliente, mentor) vem do
 // banco depois do login, nunca de uma escolha aqui. O cadastro sempre cria cliente.
-// Mesma conta do app.cmkcogit.com.br (mesmo Supabase; sessão em cookie do domínio pai).
+// Mesma conta do app.cmkcogit.com.br (mesmo Supabase). Logado no app? Entra direto (login único).
 // =====================================================================
 (async function () {
   const params = new URLSearchParams(window.location.search);
@@ -15,9 +15,17 @@
   const mensagem = (texto, erro) => { msg.textContent = texto || ''; msg.setAttribute('role', erro ? 'alert' : 'status'); if (erro) msg.style.color = 'var(--perigo)'; else msg.style.color = ''; };
   const volta = (caminho) => window.location.origin + caminho;
 
-  // já logado (inclusive pelo app): segue direto
+  // já logado aqui: segue direto
   const sessao = await getSessao();
-  if (sessao) { window.location.replace(destino); return; }
+  if (sessao) { SSO.entrou(); window.location.replace(destino); return; }
+  // login único: logado no app? Entra direto (o app devolve para cá com ?sso=0 se não estiver)
+  if (!params.has('sso') && !params.get('error_description') && !/error_description/.test(window.location.hash) && SSO.pode()) {
+    try { sessionStorage.setItem('cogit_entrar_modo', params.get('modo') || ''); } catch (_) {} // volta na mesma aba
+    SSO.tentar(destino);
+    return;
+  }
+  let modoPedido = params.get('modo');
+  try { modoPedido = modoPedido || sessionStorage.getItem('cogit_entrar_modo'); sessionStorage.removeItem('cogit_entrar_modo'); } catch (_) {}
   montarTopo(null);
 
   function modo(qual) {
@@ -30,7 +38,7 @@
   }
   abas.login.addEventListener('click', () => modo('login'));
   abas.cadastro.addEventListener('click', () => modo('cadastro'));
-  modo(params.get('modo') === 'cadastro' ? 'cadastro' : 'login');
+  modo(modoPedido === 'cadastro' ? 'cadastro' : 'login');
 
   // erro devolvido pelo Supabase/Google na URL (link vencido, Google cancelado)
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
@@ -69,6 +77,7 @@
       document.getElementById('reenviar').hidden = !/not confirmed/i.test(error.message);
       return;
     }
+    SSO.entrou();
     window.location.href = destino;
   });
 
@@ -114,6 +123,7 @@
       document.getElementById('enviado-email').textContent = email;
       return;
     }
+    SSO.entrou();
     window.location.href = '/?bem-vindo=1';
   });
 

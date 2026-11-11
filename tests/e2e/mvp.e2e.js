@@ -39,7 +39,7 @@ before(async () => {
 after(async () => { await navegador?.close(); servidor?.kill(); });
 
 // ---------------------------------------------------------------- backend simulado
-function cenario({ usuario = ANA, mentor = false, logado = true } = {}) {
+function cenario({ usuario = ANA, mentor = false, logado = true, logadoNoApp = false } = {}) {
   const chamadas = [];
   const perfis = {
     [ANA]: { id: ANA, nome: 'Ana Souza', email: 'ana@ex.com', telefone: null, role: 'cliente', documento: '52998224725', cadastro_concluido_em: '2026-01-01', aceite_termos_em: '2026-01-01' },
@@ -74,18 +74,20 @@ function cenario({ usuario = ANA, mentor = false, logado = true } = {}) {
     access_token: 'tok-' + usuario, refresh_token: 'r', token_type: 'bearer', expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600,
     user: { id: usuario, email: perfis[usuario].email, aud: 'authenticated', role: 'authenticated', user_metadata: {} }
   };
-  return { chamadas, tabelas, rpc, sessao, logado, orcamento, mentor, usuario };
+  return { chamadas, tabelas, rpc, sessao, logado, logadoNoApp, orcamento, mentor, usuario };
 }
 
 async function abrir(c, caminho) {
   const ctx = await navegador.newContext({ viewport: { width: 1280, height: 900 } });
   const erros = [];
   if (c.logado) {
-    const valor = encodeURIComponent(JSON.stringify(c.sessao));
-    await ctx.addCookies([
-      { name: 'sb-teste-auth-token.0', value: valor, url: BASE },
-      { name: 'sb-teste-auth-token.n', value: '1', url: BASE }
-    ]);
+    // sessão já guardada no localStorage deste site (uma vez por aba, para o "Sair" valer)
+    await ctx.addInitScript(({ base, sessao }) => {
+      if (location.origin === base && !sessionStorage.getItem('e2e')) {
+        localStorage.setItem('sb-teste-auth-token', JSON.stringify(sessao));
+        sessionStorage.setItem('e2e', '1');
+      }
+    }, { base: BASE, sessao: c.sessao });
   }
   await ctx.route(SUPA + '/**', async (rota) => {
     const req = rota.request();
@@ -94,7 +96,7 @@ async function abrir(c, caminho) {
     const json = (d, s = 200) => rota.fulfill({ status: s, contentType: 'application/json', body: JSON.stringify(d) });
     if (u.pathname.startsWith('/auth/v1/')) {
       if (u.pathname === '/auth/v1/signup') return json({ id: 'novo', email: 'novo@ex.com', identities: [{ id: 'x' }] });
-      if (u.pathname === '/auth/v1/token') return json(c.sessao);
+      if (u.pathname === '/auth/v1/token' || u.pathname === '/auth/v1/verify') return json(c.sessao);
       if (u.pathname === '/auth/v1/logout') return rota.fulfill({ status: 204 });
       return json(c.sessao.user);
     }
@@ -113,6 +115,14 @@ async function abrir(c, caminho) {
     const u = new URL(req.url());
     c.chamadas.push({ metodo: req.method(), caminho: u.pathname, busca: u.search, corpo: req.postData(), app: true, auth: req.headers().authorization });
     const json = (d, s = 200) => rota.fulfill({ status: s, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': BASE }, body: JSON.stringify(d) });
+    // sso.html do app (simulado): logado lá -> manda o código; não logado -> devolve com ?sso=0
+    if (u.pathname === '/sso.html') {
+      const volta = u.searchParams.get('volta') || '/painel.html';
+      const destino = c.logadoNoApp ? BASE + '/sso.html#token_hash=abc&volta=' + encodeURIComponent(volta) : BASE + '/entrar.html?sso=0&volta=' + encodeURIComponent(volta);
+      return rota.fulfill({ status: 200, contentType: 'text/html', body: '<script>location.replace(' + JSON.stringify(destino) + ')</script>' });
+    }
+    if (u.pathname === '/login.html') return rota.fulfill({ status: 200, contentType: 'text/html', body: '<h1>login do app</h1>' });
+    if (u.pathname === '/api/sso') return json({ ok: true, url: APP + '/sso.html#token_hash=xyz&volta=%2Finicio.html' });
     if (u.pathname === '/api/jornada' && req.method() === 'GET') {
       if (!u.searchParams.get('id')) return json({ ok: true, definicao: DEFINICAO, jornada: null, projetos: [] });
       const mods = c.tabelas.jornada_modulos.length ? c.tabelas.jornada_modulos : DEFINICAO.map((m, i) => ({ modulo: m.id, status: i < 2 ? 'aprovado' : i === 2 ? 'enviado' : 'aberto', respostas: {} }));
@@ -152,6 +162,8 @@ test('página inicial pública: chamada para cadastro, termos e privacidade no r
 test('cadastro: mesmos dados do app (nome, aceite) e sempre cliente; exige aceite', async () => {
   const c = cenario({ logado: false });
   const { pagina, ctx, erros } = await abrir(c, '/entrar.html?modo=cadastro');
+  await pagina.waitForURL(/[?&]sso=0/);   // não logado no app: o app devolve para cá
+  await pagina.locator('#form-cadastro').waitFor();
   await pagina.fill('#cad-nome', 'Nova Pessoa');
   await pagina.fill('#cad-email', 'novo@ex.com');
   await pagina.fill('#cad-senha', 'senhaforte1');
@@ -171,16 +183,49 @@ test('cadastro: mesmos dados do app (nome, aceite) e sempre cliente; exige aceit
   await ctx.close();
 });
 
-test('login grava a sessão em cookie (login único com o app), não no localStorage', async () => {
+test('login: sessão só neste endereço (localStorage), nenhum cookie que outro subdomínio leria', async () => {
   const c = cenario({ logado: false });
-  const { pagina, ctx } = await abrir(c, '/entrar.html');
+  const { pagina, ctx } = await abrir(c, '/entrar.html');   // não logado no app: volta com ?sso=0
+  await pagina.waitForURL(/entrar\.html\?sso=0/);
   await pagina.fill('#login-email', 'ana@ex.com');
   await pagina.fill('#login-senha', 'senhaforte1');
   await pagina.click('#form-login [type=submit]');
-  await pagina.waitForURL(/painel\.html/);
-  const cookies = await ctx.cookies();
-  assert.ok(cookies.some((k) => k.name === 'sb-teste-auth-token.0'));
-  assert.equal(await pagina.evaluate(() => localStorage.getItem('sb-teste-auth-token')), null);
+  await pagina.waitForURL(BASE + '/painel.html');
+  assert.equal((await ctx.cookies()).length, 0);
+  assert.ok(await pagina.evaluate(() => localStorage.getItem('sb-teste-auth-token')));
+  await ctx.close();
+});
+
+test('login único: logado no app, abrir o mvp entra direto (código de uso único, sem digitar nada)', async () => {
+  const c = cenario({ logado: false, logadoNoApp: true });
+  const { pagina, ctx, erros } = await abrir(c, '/projeto.html?id=' + J1);
+  await pagina.waitForURL(BASE + '/projeto.html?id=' + J1);
+  await pagina.locator('.jm-trilha').waitFor();
+  const verificar = c.chamadas.find((x) => x.caminho === '/auth/v1/verify');
+  assert.deepEqual(JSON.parse(verificar.corpo).token_hash, 'abc');
+  assert.ok(await pagina.evaluate(() => localStorage.getItem('sb-teste-auth-token')));
+  assert.equal((await ctx.cookies()).length, 0);
+  assert.deepEqual(erros, []);
+  await ctx.close();
+});
+
+test('login único: depois de "Sair" aqui, não entra sozinho pelo app de novo', async () => {
+  const c = cenario({ logadoNoApp: true });
+  const { pagina, ctx } = await abrir(c, '/painel.html');
+  await pagina.getByRole('button', { name: /Sair/ }).click();
+  await pagina.waitForURL(/entrar\.html/);
+  await pagina.locator('#form-login').waitFor();
+  assert.equal(c.chamadas.filter((x) => x.app && x.caminho === '/sso.html').length, 0);
+  await ctx.close();
+});
+
+test('login único ao contrário: o app pergunta, o mvp (logado) pede o código ao app e manda de volta', async () => {
+  const c = cenario();
+  const { pagina, ctx } = await abrir(c, '/sso.html?para=app&volta=%2Finicio.html');
+  await pagina.waitForURL(/app\.teste\.cmkcogit\.com\.br\/sso\.html#token_hash=xyz/);
+  const pedido = c.chamadas.find((x) => x.app && x.caminho === '/api/sso');
+  assert.deepEqual(JSON.parse(pedido.corpo), { para: 'app', volta: '/inicio.html' });
+  assert.match(pedido.auth, /^Bearer tok-/);
   await ctx.close();
 });
 

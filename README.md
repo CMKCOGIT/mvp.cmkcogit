@@ -24,9 +24,13 @@ navegador (mvp) ──leitura──> Supabase (RLS decide: dono, mentor com comp
        └──escrita/pagamento/IA──> app.cmkcogit.com.br/api/jornada e /api/mvp  (CORS só para este domínio,
                                   token do Supabase no cabeçalho Authorization)
 "Construir com a CMK Cogit" ──> app.cmkcogit.com.br/projeto/{id}  (só o ID; o app monta a solicitação pelo banco)
-login único: sessão do Supabase num cookie de .cmkcogit.com.br (mesmo código no js/app.js dos dois sites)
+login único SEM cookie compartilhado: cada site guarda a própria sessão; sem sessão, sso.html do outro site
+  devolve um código de uso único (emitido pelo servidor do app) ou volta para o login (?sso=0)
 ```
 
+- **Login único sem cookie compartilhado.** A sessão fica só em mvp.cmkcogit.com.br. Um site de cliente em outro
+  subdomínio (ex.: `artenos.cmkcogit.com.br`) não recebe nem lê a sessão. Quem já está logado no app entra direto
+  (e vice-versa) por um código de uso único; "Sair" vale para este site, "Sair de todos os dispositivos" para todos.
 - **Papéis vêm do banco.** Toda conta é cliente. Mentor é uma permissão adicional (`user_roles`), pedida em "Quero
   ser mentor" (só aqui: boas-vindas e perfil) e aprovada por um admin no app. O painel do mentor aparece só com
   `is_mentor()` verdadeiro; e mesmo chamando o banco direto, o mentor só lê projetos compartilhados com ele.
@@ -42,6 +46,7 @@ login único: sessão do Supabase num cookie de .cmkcogit.com.br (mesmo código 
 | Rota | Quem | O que faz |
 |---|---|---|
 | `/` | todos | Apresentação. Logado: boas-vindas com "Começar meu projeto" e "Quero ser mentor" |
+| `/sso.html` | todos | Login único com o app (passagem automática; ninguém vê esta página por mais de um instante) |
 | `/entrar.html` (`?modo=cadastro`, `?volta=`) | todos | Entrar / criar conta (e-mail e senha ou Google), iguais para todos, com captcha |
 | `/concluir-cadastro.html` | logado sem cadastro completo | Nome, CPF/CNPJ e aceite dos termos (função `concluir_cadastro`, a mesma do app) |
 | `/redefinir-senha.html` | link do e-mail | Nova senha |
@@ -56,12 +61,13 @@ login único: sessão do Supabase num cookie de .cmkcogit.com.br (mesmo código 
 ```
 api/config.js            única função: configuração pública (/config.js)
 public/                  páginas (HTML), css/ (mvp.css + jornada.css vindo do app), js/, assets/
-  js/app.js              base: sessão em cookie, captcha, cliente da API do app, proteção por papel, topo
+  js/app.js              base: sessão, login único (SSO), captcha, cliente da API do app, proteção por papel, topo
+  js/sso.js              login único: recebe o código do app ou pede um código para mandar ao app
   js/projeto.js          a Jornada (veio do public/js/jornada.js do app) + conversa com o mentor
   js/compartilhar.js     compartilhar/revogar com consentimento
   js/mentoria.js         "Quero ser mentor"
 types/database.d.ts      tipos do banco (npm run tipos para gerar do banco)
-tests/                   unidade (sessão em cookie, páginas) e e2e/ (Playwright com Supabase e app simulados)
+tests/                   unidade (login único, páginas) e e2e/ (Playwright com Supabase e app simulados)
 tools/                   versionar.mjs (cache dos CSS/JS), gerar-tipos.mjs
 dev-server.mjs           roda no computador como a Vercel (porta 3001)
 ```
@@ -76,7 +82,7 @@ npm run test:e2e             # navegador (Playwright + Chromium), com Supabase e
 npm run versionar            # depois de mudar qualquer CSS/JS em public/
 ```
 
-No computador o login único entre as duas portas não acontece (cookies de `localhost` sem domínio pai): entre nos dois.
+No computador o login único funciona entre as portas 3000 e 3001 se o app tiver `MVP_URL=http://localhost:3001`.
 
 ## Tipos do Supabase
 
@@ -90,10 +96,10 @@ No computador o login único entre as duas portas não acontece (cookies de `loc
 ## Publicar (Vercel + DNS + Supabase)
 
 1. **App primeiro:** rode `sql/31_mvp_orcamento_mentor.sql` no Supabase e publique a versão do app que tem
-   `/api/mvp`, CORS (`MVP_ORIGENS=https://mvp.cmkcogit.com.br`) e `COOKIE_DOMAIN=.cmkcogit.com.br`.
+   `/api/mvp`, `/api/sso` (login único) e CORS (`MVP_ORIGENS=https://mvp.cmkcogit.com.br`, `MVP_URL`).
 2. vercel.com > Add New > Project > este repositório. Framework: **Other** (o `vercel.json` já define `public/`).
 3. Environment Variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `APP_URL=https://app.cmkcogit.com.br`,
-   `SITE_URL`, `COOKIE_DOMAIN=.cmkcogit.com.br`, `TURNSTILE_SITE_KEY`, `WHATSAPP_SUPORTE`. **Nenhuma chave secreta.**
+   `SITE_URL`, `TURNSTILE_SITE_KEY`, `WHATSAPP_SUPORTE`. **Nenhuma chave secreta.**
 4. Settings > Domains > `mvp.cmkcogit.com.br`; no DNS: `CNAME mvp -> cname.vercel-dns.com` (o valor que a Vercel mostrar).
 5. **Supabase > Authentication > URL Configuration > Redirect URLs:** acrescente `https://mvp.cmkcogit.com.br/**`
    (e `http://localhost:3001/**`). Sem isso, confirmação de e-mail, Google e "esqueci a senha" voltam para o app.

@@ -4,7 +4,7 @@
 // - Mesmo Supabase do app.cmkcogit.com.br. Leitura direto no banco com a sessão do usuário: o RLS
 //   decide o que cada um vê (dono, mentor com compartilhamento). Nada de service_role aqui.
 // - Escrita da Jornada, pagamento e IA: rotas do app (CFG.appUrl + /api/jornada e /api/mvp).
-// - Login único: sessão do Supabase num cookie do domínio pai (.cmkcogit.com.br), igual ao app.
+// - Login único com o app sem cookie compartilhado (objeto SSO abaixo + sso.html).
 // - Papel vem do banco: cliente sempre; mentor se is_mentor() (permissão adicional, sql/31 do app).
 // =====================================================================
 const CFG = window.COGIT_CONFIG || {};
@@ -21,54 +21,29 @@ const CFG = window.COGIT_CONFIG || {};
 })();
 
 // ---------------------------------------------------------------------
-// Sessão em cookie do domínio pai (mesmo código do js/app.js do app). Pedaços de 3000
-// caracteres porque o token passa de 4 KB. Fora do domínio configurado, cookie só deste endereço.
+// Login único com o app.cmkcogit.com.br SEM cookie compartilhado: a sessão fica só neste endereço
+// (padrão do supabase-js), então nenhum outro subdomínio (ex.: um site de cliente em
+// xxx.cmkcogit.com.br) recebe ou lê a sessão. "Entrar direto" usa um código de uso único emitido pelo
+// servidor do app (sso.html dos dois sites + /api/sso do app).
 // ---------------------------------------------------------------------
-const armazenamentoSessao = (function () {
-  const dominio = String(CFG.cookieDomain || '').replace(/^\.?/, '.');
-  const usarDominio = dominio.length > 1 && ('.' + window.location.hostname).endsWith(dominio);
-  const PEDACO = 3000;
-  const MAX_IDADE = 400 * 24 * 60 * 60;
-  const base = '; Path=/; SameSite=Lax' + (usarDominio ? '; Domain=' + dominio : '') + (location.protocol === 'https:' ? '; Secure' : '');
-  const ler = (nome) => {
-    const m = document.cookie.split('; ').find((c) => c.startsWith(nome + '='));
-    return m ? m.slice(nome.length + 1) : null;
-  };
-  const gravar = (nome, valor, idade = MAX_IDADE) => { document.cookie = nome + '=' + valor + '; Max-Age=' + idade + base; };
-  function remover(chave) {
-    const n = Number(ler(chave + '.n')) || 0;
-    for (let i = 0; i < Math.max(n, 8); i++) if (ler(chave + '.' + i) !== null) gravar(chave + '.' + i, '', 0);
-    gravar(chave + '.n', '', 0);
-  }
-  function getItem(chave) {
-    const n = Number(ler(chave + '.n')) || 0;
-    if (n > 0) {
-      let txt = '';
-      for (let i = 0; i < n; i++) {
-        const p = ler(chave + '.' + i);
-        if (p === null) return null;
-        txt += p;
-      }
-      try { return decodeURIComponent(txt); } catch (_) { return null; }
-    }
-    try {
-      const antigo = localStorage.getItem(chave);
-      if (antigo) { setItem(chave, antigo); localStorage.removeItem(chave); return antigo; }
-    } catch (_) {}
-    return null;
-  }
-  function setItem(chave, valor) {
-    remover(chave);
-    const cod = encodeURIComponent(valor);
-    const partes = Math.ceil(cod.length / PEDACO) || 1;
-    for (let i = 0; i < partes; i++) gravar(chave + '.' + i, cod.slice(i * PEDACO, (i + 1) * PEDACO));
-    gravar(chave + '.n', String(partes));
-  }
-  return { getItem, setItem, removeItem: remover };
-})();
+const SSO = {
+  TENTADO: 'cogit_sso_tentado',  // sessionStorage: já tentou nesta aba (evita ir e voltar sem fim)
+  SAIU: 'cogit_sso_saiu',        // localStorage: clicou em "Sair" aqui; não entra sozinho até um login manual
+  pode() {
+    if (!CFG.appUrl) return false;
+    try { return !sessionStorage.getItem(SSO.TENTADO) && !localStorage.getItem(SSO.SAIU); } catch (_) { return false; }
+  },
+  // Sem sessão aqui: pergunta ao app se a pessoa já está logada lá (ele devolve nos dois casos)
+  tentar(volta) {
+    try { sessionStorage.setItem(SSO.TENTADO, '1'); } catch (_) {}
+    window.location.replace(CFG.appUrl + '/sso.html?para=mvp&volta=' + encodeURIComponent(volta || '/painel.html'));
+  },
+  entrou() { try { localStorage.removeItem(SSO.SAIU); sessionStorage.removeItem(SSO.TENTADO); } catch (_) {} },
+  saiu() { try { localStorage.setItem(SSO.SAIU, '1'); } catch (_) {} }
+};
 
 const db = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: armazenamentoSessao }
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
 });
 
 // ---------------------------------------------------------------------
@@ -249,7 +224,9 @@ async function protegerPagina({ mentor = false } = {}) {
   return perfil;
 }
 
+// "Sair" vale para este site (o app continua logado). "Sair de todos" encerra todas as sessões.
 async function sair(global = false) {
+  SSO.saiu();
   await db.auth.signOut(global ? { scope: 'global' } : undefined);
   window.location.href = '/entrar.html';
 }

@@ -10,8 +10,6 @@ export default function handler(req, res) {
     supabaseAnonKey: env.SUPABASE_ANON_KEY || '',
     appUrl: limpa(env.APP_URL, 'https://app.cmkcogit.com.br'),
     siteUrl: limpa(env.SITE_URL, 'https://www.cmkcogit.com.br'),
-    // login único com o app: sessão em cookie do domínio pai (vazio = só neste endereço)
-    cookieDomain: /^\.?[a-z0-9.-]+\.[a-z]{2,}$/i.test(env.COOKIE_DOMAIN || '') ? env.COOKIE_DOMAIN : '',
     turnstileSiteKey: env.TURNSTILE_SITE_KEY || '',
     whatsapp: String(env.WHATSAPP_SUPORTE || '5517981568889').replace(/\D/g, '')
   };
