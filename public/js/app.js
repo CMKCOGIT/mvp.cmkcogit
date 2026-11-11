@@ -255,7 +255,12 @@ async function api(caminho, corpo, metodo = 'POST') {
       ? { method: 'GET', headers: { Authorization: 'Bearer ' + sessao.access_token } }
       : { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + sessao.access_token }, body: JSON.stringify(corpo || {}) });
   } catch (_) {
-    throw Object.assign(new Error('Sem conexão. Verifique sua internet e tente de novo.'), { status: 0 });
+    // fetch só falha assim sem resposta legível: internet caiu OU o app recusou/não tem a rota (CORS, versão antiga)
+    const msg = navigator.onLine === false
+      ? 'Sem conexão. Verifique sua internet e tente de novo.'
+      : 'Não foi possível falar com o servidor da CMK Cogit (' + new URL(CFG.appUrl).host + '). Tente de novo em instantes; se continuar, avise a equipe.';
+    console.error('Falha ao chamar ' + CFG.appUrl + '/api/' + caminho.split('?')[0] + ': confira se o app está atualizado, o APP_URL deste site e o MVP_ORIGENS do app.');
+    throw Object.assign(new Error(msg), { status: 0 });
   }
   const dados = await resp.json().catch(() => ({}));
   if (resp.status === 403 && dados.codigo === 'cadastro_incompleto') window.location.replace('/concluir-cadastro.html');
