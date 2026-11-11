@@ -1,0 +1,498 @@
+[
+ {
+  "id": "bases-projeto",
+  "nome": "Bases do Projeto",
+  "icone": "empresa",
+  "resumo": "O essencial sobre o negócio e sobre quem está por trás dele. É a capa do seu resumo final.",
+  "etapas": [
+   {
+    "id": "slogan",
+    "titulo": "Em uma frase",
+    "pergunta": "Explique o seu negócio em uma frase, como se contasse a alguém que nunca ouviu falar dele.",
+    "curto": true
+   },
+   {
+    "id": "estagio",
+    "titulo": "Estágio",
+    "pergunta": "Em que ponto o negócio está hoje?",
+    "tipo": "unica",
+    "opcoes": [
+     {
+      "id": "ideia",
+      "nome": "Ideia: ainda não existe nada construído"
+     },
+     {
+      "id": "prototipo",
+      "nome": "Protótipo ou teste com poucas pessoas"
+     },
+     {
+      "id": "vendendo",
+      "nome": "Já tem clientes ou usuários"
+     },
+     {
+      "id": "operacao",
+      "nome": "Empresa em operação, quer um produto novo"
+     }
+    ]
+   },
+   {
+    "id": "tipo",
+    "titulo": "Tipo de organização",
+    "pergunta": "Como o negócio se organiza?",
+    "tipo": "unica",
+    "opcoes": [
+     {
+      "id": "lucrativo",
+      "nome": "Empresa com fins lucrativos"
+     },
+     {
+      "id": "social",
+      "nome": "Organização sem fins lucrativos"
+     },
+     {
+      "id": "hibrido",
+      "nome": "Híbrido: negócio de impacto"
+     }
+    ]
+   },
+   {
+    "id": "equipe",
+    "titulo": "Quem está construindo",
+    "pergunta": "Liste as pessoas fundadoras (até 3): nome, papel e a experiência que cada uma traz.",
+    "dica": "Uma pessoa por linha. Conte o que torna essa equipe a certa para este problema."
+   },
+   {
+    "id": "presenca",
+    "titulo": "Onde encontrar",
+    "pergunta": "Site, redes sociais e contato do negócio, se já existirem.",
+    "opcional": true
+   },
+   {
+    "id": "busca",
+    "titulo": "O que você busca agora",
+    "pergunta": "Além do produto, do que o negócio precisa neste momento?",
+    "tipo": "multipla",
+    "opcional": true,
+    "opcoes": [
+     {
+      "id": "investimento",
+      "nome": "Investimento"
+     },
+     {
+      "id": "socios",
+      "nome": "Sócios ou cofundadores"
+     },
+     {
+      "id": "parceiros",
+      "nome": "Parceiros de negócio"
+     },
+     {
+      "id": "clientes",
+      "nome": "Primeiros clientes"
+     },
+     {
+      "id": "mentoria",
+      "nome": "Mentoria"
+     },
+     {
+      "id": "apoio",
+      "nome": "Apoio jurídico ou contábil"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "proposta-valor",
+  "nome": "Proposta de Valor",
+  "icone": "criar",
+  "resumo": "Do problema às causas, das causas aos clientes, e dos clientes à melhor oportunidade para o seu produto.",
+  "etapas": [
+   {
+    "id": "problema",
+    "titulo": "O problema principal",
+    "pergunta": "Qual é o principal problema que você resolve para os seus clientes? Descreva um só, com uma situação real.",
+    "dica": "Quanto mais concreto, melhor: quem passa por isso, com que frequência e o que perde (tempo, dinheiro, clientes)."
+   },
+   {
+    "id": "arvore",
+    "titulo": "Árvore do problema",
+    "tipo": "arvore",
+    "pergunta": "Por que esse problema existe? Liste até 3 causas e, para cada uma, pergunte \"por quê?\" de novo até chegar à causa de fundo. Depois marque as causas que o seu produto vai atacar.",
+    "dica": "Você chegou ao fim de um ramo quando a causa já é algo grande demais para um produto resolver (leis, cultura, falta de orçamento público)."
+   },
+   {
+    "id": "solucao",
+    "titulo": "A solução",
+    "pergunta": "Como o seu produto resolve as causas que você marcou? Descreva em poucas frases o que ele faz."
+   },
+   {
+    "id": "segmentos",
+    "titulo": "Segmentos de clientes",
+    "tipo": "segmentos",
+    "pergunta": "Quem são os seus grupos de clientes? Para cada grupo, escreva as dores, os benefícios que o produto entrega e até 4 objetivos que essas pessoas querem alcançar. Em cada objetivo, diga o quanto ele importa e o quanto as opções de hoje já atendem.",
+    "dica": "Objetivo é o resultado que a pessoa quer, não uma função do sistema. Ex.: \"saber se vai alagar no meu caminho\", e não \"receber notificação\"."
+   },
+   {
+    "id": "mapa",
+    "titulo": "Mapa de oportunidades",
+    "tipo": "mapa",
+    "fonte": "segmentos",
+    "opcional": true,
+    "pergunta": "Os objetivos que você listou, por importância e por quanto já são atendidos hoje. Quanto mais importante e menos atendido, maior a oportunidade."
+   },
+   {
+    "id": "foco",
+    "titulo": "Onde focar",
+    "pergunta": "Olhando o mapa, por que os segmentos marcados como foco são a melhor aposta para a primeira versão?",
+    "dica": "Quais são os menos atendidos? Quais são os maiores? Qual é a oportunidade mais fácil de alcançar primeiro?"
+   },
+   {
+    "id": "diferencial",
+    "titulo": "Diferencial",
+    "pergunta": "Por que alguém escolheria o seu produto em vez do que já existe?"
+   }
+  ]
+ },
+ {
+  "id": "mapa-concorrencia",
+  "nome": "Mapa da Concorrência",
+  "icone": "atrair",
+  "resumo": "Quem já atende o seu público e o que dá para fazer melhor.",
+  "etapas": [
+   {
+    "id": "concorrentes",
+    "titulo": "Concorrentes",
+    "pergunta": "Liste de 3 a 5 concorrentes diretos ou indiretos (nome e site, se tiver)."
+   },
+   {
+    "id": "fortes",
+    "titulo": "Pontos fortes deles",
+    "pergunta": "O que esses concorrentes fazem bem?"
+   },
+   {
+    "id": "fracos",
+    "titulo": "Pontos fracos deles",
+    "pergunta": "Do que os clientes deles reclamam? O que falta?"
+   },
+   {
+    "id": "precos",
+    "titulo": "Preços praticados",
+    "pergunta": "Quanto e como eles cobram (mensalidade, comissão, valor único)?",
+    "opcional": true
+   },
+   {
+    "id": "referencias",
+    "titulo": "Referências",
+    "pergunta": "Há algum aplicativo ou site que você gostaria de usar como referência de funcionamento ou de aparência?",
+    "opcional": true
+   }
+  ]
+ },
+ {
+  "id": "mapa-stakeholders",
+  "nome": "Mapa de Stakeholders",
+  "icone": "equipe",
+  "resumo": "Todas as pessoas que vão usar, pagar, administrar ou ser afetadas pelo produto.",
+  "etapas": [
+   {
+    "id": "perfis",
+    "titulo": "Perfis de usuário",
+    "pergunta": "Quais tipos de pessoa vão entrar no sistema? Para cada um, diga o que pode ver e fazer.",
+    "dica": "Exemplo: cliente final (agenda horário), profissional (vê a agenda), dono (vê relatórios e cadastra equipe)."
+   },
+   {
+    "id": "pagador",
+    "titulo": "Quem paga",
+    "pergunta": "Quem paga pelo produto? É a mesma pessoa que usa?"
+   },
+   {
+    "id": "administracao",
+    "titulo": "Quem administra",
+    "pergunta": "Quem vai cuidar do sistema no dia a dia (cadastros, atendimento, conteúdo)?"
+   },
+   {
+    "id": "parceiros",
+    "titulo": "Parceiros e terceiros",
+    "pergunta": "Existem parceiros, fornecedores ou órgãos que precisam receber ou enviar informações?",
+    "opcional": true
+   }
+  ]
+ },
+ {
+  "id": "modelo-negocio",
+  "nome": "Modelo de Negócio & Marketing",
+  "icone": "valor",
+  "resumo": "Como o produto ganha dinheiro e como os clientes chegam até ele.",
+  "etapas": [
+   {
+    "id": "receita",
+    "titulo": "Fonte de receita",
+    "pergunta": "Como o produto vai ganhar dinheiro?",
+    "tipo": "multipla",
+    "opcoes": [
+     {
+      "id": "assinatura",
+      "nome": "Assinatura (mensal ou anual)"
+     },
+     {
+      "id": "venda",
+      "nome": "Venda de produtos ou serviços"
+     },
+     {
+      "id": "comissao",
+      "nome": "Comissão por transação"
+     },
+     {
+      "id": "anuncios",
+      "nome": "Anúncios"
+     },
+     {
+      "id": "gratuito",
+      "nome": "Uso gratuito (sem cobrança no início)"
+     },
+     {
+      "id": "interno",
+      "nome": "Uso interno da minha empresa"
+     }
+    ]
+   },
+   {
+    "id": "cobranca",
+    "titulo": "Cobrança dentro do produto",
+    "pergunta": "O pagamento acontece dentro do sistema?",
+    "tipo": "unica",
+    "opcoes": [
+     {
+      "id": "sim",
+      "nome": "Sim, o cliente paga dentro do sistema (Pix, cartão, boleto)"
+     },
+     {
+      "id": "fora",
+      "nome": "Não, a cobrança é feita por fora"
+     },
+     {
+      "id": "depois",
+      "nome": "Só numa próxima fase"
+     }
+    ]
+   },
+   {
+    "id": "precos",
+    "titulo": "Preços",
+    "pergunta": "Quanto você pretende cobrar? Existem planos diferentes?",
+    "opcional": true
+   },
+   {
+    "id": "canais",
+    "titulo": "Canais de aquisição",
+    "pergunta": "Como os clientes vão descobrir e chegar ao produto?",
+    "dica": "Instagram, Google, indicação, vendedores, parceiros, eventos..."
+   },
+   {
+    "id": "metas",
+    "titulo": "Meta dos primeiros meses",
+    "pergunta": "Quantos clientes ou usuários você espera nos primeiros 6 meses?"
+   }
+  ]
+ },
+ {
+  "id": "jornada-usuario",
+  "nome": "Jornada do Usuário",
+  "icone": "operacao",
+  "resumo": "O caminho que a pessoa faz dentro do produto, do primeiro acesso ao resultado.",
+  "etapas": [
+   {
+    "id": "entrada",
+    "titulo": "Primeiro acesso",
+    "pergunta": "Como a pessoa começa a usar? Precisa criar conta? Com quais dados?"
+   },
+   {
+    "id": "principal",
+    "titulo": "Caminho principal",
+    "pergunta": "Descreva, passo a passo, o uso mais importante do produto, do começo até o resultado.",
+    "dica": "Escreva como uma lista: 1) entra, 2) escolhe..., 3) confirma..., 4) recebe..."
+   },
+   {
+    "id": "secundarios",
+    "titulo": "Outros caminhos",
+    "pergunta": "Que outras tarefas as pessoas fazem com frequência no produto?",
+    "opcional": true
+   },
+   {
+    "id": "avisos",
+    "titulo": "Avisos",
+    "pergunta": "Em que momentos a pessoa precisa ser avisada, e por onde (e-mail, WhatsApp, notificação)?"
+   }
+  ]
+ },
+ {
+  "id": "funcionalidades",
+  "nome": "Funcionalidades do MVP",
+  "icone": "checklist",
+  "resumo": "O que precisa existir no primeiro dia, o que pode esperar e o que fica de fora.",
+  "etapas": [
+   {
+    "id": "essenciais",
+    "titulo": "Essenciais",
+    "pergunta": "Sem quais funcionalidades o produto não pode ser lançado?",
+    "dica": "Uma por linha. Pense no mínimo que já entrega valor."
+   },
+   {
+    "id": "desejaveis",
+    "titulo": "Desejáveis",
+    "pergunta": "O que seria bom ter, mas pode ficar para uma segunda versão?",
+    "opcional": true
+   },
+   {
+    "id": "fora",
+    "titulo": "Fora do escopo",
+    "pergunta": "O que você já sabe que NÃO entra agora?",
+    "opcional": true
+   },
+   {
+    "id": "relatorios",
+    "titulo": "Relatórios e indicadores",
+    "pergunta": "Que números você precisa acompanhar no painel (vendas, cadastros, agendamentos...)?",
+    "opcional": true
+   }
+  ]
+ },
+ {
+  "id": "dados-integracoes",
+  "nome": "Dados & Integrações",
+  "icone": "link",
+  "resumo": "As informações que o sistema guarda e os serviços externos com que conversa.",
+  "etapas": [
+   {
+    "id": "cadastros",
+    "titulo": "Cadastros",
+    "pergunta": "Que informações o sistema precisa guardar?",
+    "dica": "Exemplo: clientes, produtos, pedidos, agendamentos, documentos, fotos."
+   },
+   {
+    "id": "integracoes",
+    "titulo": "Integrações",
+    "pergunta": "Com quais serviços o produto precisa se conectar?",
+    "tipo": "multipla",
+    "opcional": true,
+    "opcoes": [
+     {
+      "id": "pagamento",
+      "nome": "Pagamento online (Pix, cartão, boleto)"
+     },
+     {
+      "id": "whatsapp",
+      "nome": "WhatsApp"
+     },
+     {
+      "id": "email",
+      "nome": "Envio de e-mails"
+     },
+     {
+      "id": "nota-fiscal",
+      "nome": "Nota fiscal"
+     },
+     {
+      "id": "mapas",
+      "nome": "Mapas e localização"
+     },
+     {
+      "id": "agenda",
+      "nome": "Agenda (Google Calendar)"
+     },
+     {
+      "id": "login-social",
+      "nome": "Entrar com Google ou redes sociais"
+     },
+     {
+      "id": "ia",
+      "nome": "Inteligência artificial"
+     },
+     {
+      "id": "sistema-existente",
+      "nome": "Um sistema que eu já uso (ERP, CRM, planilha)"
+     }
+    ]
+   },
+   {
+    "id": "integracoes-detalhe",
+    "titulo": "Detalhes das integrações",
+    "pergunta": "Explique o que cada integração precisa fazer e com qual sistema.",
+    "opcional": true
+   },
+   {
+    "id": "dados-sensiveis",
+    "titulo": "Dados sensíveis",
+    "pergunta": "O sistema vai guardar dados sensíveis (saúde, documentos, dados financeiros, menores de idade)?"
+   }
+  ]
+ },
+ {
+  "id": "operacao-prazo",
+  "nome": "Operação & Prazo",
+  "icone": "prazo",
+  "resumo": "Onde o produto roda, quando precisa ficar pronto e o que já existe.",
+  "etapas": [
+   {
+    "id": "plataformas",
+    "titulo": "Onde vai rodar",
+    "pergunta": "Em quais plataformas o produto precisa funcionar no lançamento?",
+    "tipo": "multipla",
+    "opcoes": [
+     {
+      "id": "web",
+      "nome": "Site / sistema no navegador (computador e celular)"
+     },
+     {
+      "id": "android",
+      "nome": "Aplicativo Android (loja)"
+     },
+     {
+      "id": "ios",
+      "nome": "Aplicativo iPhone (loja)"
+     },
+     {
+      "id": "painel",
+      "nome": "Painel administrativo separado"
+     }
+    ]
+   },
+   {
+    "id": "prazo",
+    "titulo": "Prazo",
+    "pergunta": "Quando você precisa do MVP no ar?",
+    "tipo": "unica",
+    "opcoes": [
+     {
+      "id": "30",
+      "nome": "Em até 30 dias"
+     },
+     {
+      "id": "60",
+      "nome": "Em até 60 dias"
+     },
+     {
+      "id": "90",
+      "nome": "Em até 90 dias"
+     },
+     {
+      "id": "flexivel",
+      "nome": "Tenho flexibilidade"
+     }
+    ]
+   },
+   {
+    "id": "existente",
+    "titulo": "O que já existe",
+    "pergunta": "Você já tem marca, domínio, telas desenhadas, textos ou algum sistema pronto?"
+   },
+   {
+    "id": "investimento",
+    "titulo": "Investimento previsto",
+    "pergunta": "Existe um teto de investimento para esta primeira versão?",
+    "opcional": true
+   }
+  ]
+ }
+]

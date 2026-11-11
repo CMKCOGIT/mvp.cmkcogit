@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar ou criar conta | Jornada MVP · CMK COGIT</title>
+  <meta name="description" content="Entre ou crie sua conta grátis na Jornada MVP da CMK COGIT. A mesma conta vale no app.cmkcogit.com.br.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://mvp.cmkcogit.com.br/entrar.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Entrar ou criar conta | Jornada MVP · CMK COGIT">
+  <meta property="og:description" content="Entre ou crie sua conta grátis na Jornada MVP da CMK COGIT. A mesma conta vale no app.cmkcogit.com.br.">
+  <meta property="og:url" content="https://mvp.cmkcogit.com.br/entrar.html">
+  <meta property="og:image" content="https://mvp.cmkcogit.com.br/assets/marca/cogit-og-icone.png">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" href="/assets/marca/cogit-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/assets/marca/cogit-apple-touch.png">
+  <link rel="preload" href="/assets/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/mvp.css?v=645db817cd">
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+  <main id="conteudo">
+    <p id="aviso" role="status"></p>
+    <p id="erro" role="alert"></p>
+    <div class="entrada">
+      <section>
+        <p class="rotulo">Jornada MVP</p>
+        <h1>Uma conta para a jornada e para o app.</h1>
+        <p class="nota">A mesma conta vale aqui e no app.cmkcogit.com.br: entrou em um, está nos dois. O cadastro é gratuito.</p>
+      </section>
+      <section class="cartao" aria-label="Entrar ou criar conta">
+        <div class="abas" role="tablist">
+          <button type="button" role="tab" id="aba-entrar" aria-controls="form-login" aria-selected="true">Entrar</button>
+          <button type="button" role="tab" id="aba-cadastro" aria-controls="form-cadastro" aria-selected="false">Criar conta</button>
+        </div>
+        <p id="mensagem" role="status"></p>
+        <form id="form-login" class="form-largo" role="tabpanel" aria-labelledby="aba-entrar" novalidate>
+          <div class="campo"><label for="login-email">E-mail</label><input type="email" id="login-email" autocomplete="email" required></div>
+          <div class="campo"><label for="login-senha">Senha</label><input type="password" id="login-senha" autocomplete="current-password" required></div>
+          <button type="submit">Entrar</button>
+          <p class="acoes"><button type="button" class="botao-link" id="esqueci-senha">Esqueci minha senha</button></p>
+          <p id="reenviar" hidden><button type="button" class="botao-secundario" id="btn-reenviar">Reenviar e-mail de confirmação</button></p>
+        </form>
+        <form id="form-cadastro" class="form-largo" role="tabpanel" aria-labelledby="aba-cadastro" hidden novalidate>
+          <div class="campo"><label for="cad-nome">Nome</label><input type="text" id="cad-nome" autocomplete="name" maxlength="120" required></div>
+          <div class="campo"><label for="cad-email">E-mail</label><input type="email" id="cad-email" autocomplete="email" required></div>
+          <div class="campo"><label for="cad-telefone">WhatsApp <small>(opcional)</small></label><input type="tel" id="cad-telefone" autocomplete="tel" inputmode="tel" placeholder="(17) 98156-8889"></div>
+          <div class="campo"><label for="cad-senha">Senha</label><input type="password" id="cad-senha" autocomplete="new-password" minlength="8" required><small>Mínimo de 8 caracteres.</small></div>
+          <div class="campo"><label for="cad-senha2">Repita a senha</label><input type="password" id="cad-senha2" autocomplete="new-password" required></div>
+          <label class="aceite campo"><input type="checkbox" id="cad-aceite"> <span>Li e aceito os <a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a> (LGPD).</span></label>
+          <button type="submit">Criar conta grátis</button>
+        </form>
+        <div id="enviado" hidden>
+          <h2>Confirme seu e-mail</h2>
+          <p>Enviamos um link para <strong id="enviado-email"></strong>. Abra o link neste mesmo navegador para continuar.</p>
+          <p class="nota">Não chegou? Confira o spam. Você pode pedir outro em 1 minuto.</p>
+          <p class="acoes"><button type="button" class="botao-secundario" id="btn-reenviar-cadastro">Reenviar link</button><button type="button" class="botao-link" id="btn-enviado-voltar">Voltar</button></p>
+          <p id="status-enviado" role="status" class="nota"></p>
+        </div>
+        <div class="ou" id="ou-google">ou</div>
+        <button type="button" class="botao-google" id="btn-google">Continuar com Google</button>
+      </section>
+    </div>
+  </main>
+  <footer id="rodape"></footer>
+  <script src="/js/vendor/supabase-2.45.4.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/app.js?v=313ba81873"></script>
+  <script src="/js/entrar.js?v=7dee1fb9ec"></script>
+</body>
+</html>

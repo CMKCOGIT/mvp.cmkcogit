@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu perfil | Jornada MVP · CMK COGIT</title>
+  <meta name="description" content="Seus dados e a opção de ser mentor.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" href="/assets/marca/cogit-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/assets/marca/cogit-apple-touch.png">
+  <link rel="preload" href="/assets/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/mvp.css?v=645db817cd">
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+  <main id="conteudo">
+    <header class="cabecalho-pagina"><div><p class="rotulo">Conta</p><h1>Meu perfil</h1><p>Os dados valem aqui e no app.cmkcogit.com.br.</p></div></header>
+    <p id="aviso" role="status"></p>
+    <p id="erro" role="alert"></p>
+    <div class="duas-colunas">
+      <div>
+        <form id="form-dados" class="cartao" novalidate>
+          <h2>Dados</h2>
+          <div class="campo"><label for="p-nome">Nome</label><input type="text" id="p-nome" maxlength="120" autocomplete="name"></div>
+          <div class="campo"><label for="p-telefone">WhatsApp</label><input type="tel" id="p-telefone" autocomplete="tel"></div>
+          <div class="campo"><label for="p-email">E-mail</label><input type="email" id="p-email" disabled></div>
+          <button type="submit">Salvar dados</button>
+        </form>
+        <form id="form-documento" class="cartao" novalidate>
+          <h2>CPF ou CNPJ</h2>
+          <p class="nota" id="doc-atual"></p>
+          <div class="campo"><label for="p-documento">CPF ou CNPJ do contratante</label><input type="text" id="p-documento" inputmode="numeric" maxlength="18" autocomplete="off"><small>Necessário para pagar o documento detalhado (mesma regra das outras compras).</small></div>
+          <button type="submit">Salvar documento</button>
+        </form>
+      </div>
+      <aside>
+        <section class="cartao cartao-azul" id="mentoria"></section>
+        <section class="cartao">
+          <h2>Sessão</h2>
+          <p class="acoes"><button type="button" class="botao-secundario" id="btn-sair-todos">Sair de todos os dispositivos</button></p>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <footer id="rodape"></footer>
+  <script src="/js/vendor/supabase-2.45.4.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/app.js?v=313ba81873"></script>
+  <script src="/js/mentoria.js?v=a130499fbf"></script>
+  <script src="/js/perfil.js?v=faa9c61a3b"></script>
+</body>
+</html>

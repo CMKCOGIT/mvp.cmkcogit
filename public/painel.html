@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus projetos | Jornada MVP · CMK COGIT</title>
+  <meta name="description" content="Seus projetos na Jornada MVP.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" href="/assets/marca/cogit-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/assets/marca/cogit-apple-touch.png">
+  <link rel="preload" href="/assets/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/mvp.css?v=645db817cd">
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+  <main id="conteudo">
+    <header class="cabecalho-pagina"><div><p class="rotulo">Painel</p><h1>Meus projetos</h1>
+      <p>Cada projeto é uma ideia de software. Responda a jornada, veja o resumo do orçamento e compartilhe com seu mentor quando quiser.</p></div>
+      <button type="button" id="btn-novo"><svg class="i" aria-hidden="true" focusable="false"><use href="/assets/icons/bi.svg#adicionar"></use></svg> Novo projeto</button></header>
+    <p id="aviso" role="status"></p>
+    <p id="erro" role="alert"></p>
+    <div class="duas-colunas">
+      <section aria-labelledby="t-projetos"><h2 id="t-projetos" class="so-leitor-tela">Projetos</h2>
+        <div id="lista-projetos" aria-busy="true"><div data-esqueleto></div></div></section>
+      <aside aria-label="Resumo">
+        <section class="cartao" id="caixa-credito"></section>
+        <section class="cartao" id="caixa-mentor"></section>
+      </aside>
+    </div>
+    <dialog id="dlg-novo" aria-labelledby="t-novo">
+      <header><h2 id="t-novo">Novo projeto</h2><button type="button" class="botao-icone" data-fechar aria-label="Fechar"><svg class="i" aria-hidden="true" focusable="false"><use href="/assets/icons/bi.svg#fechar"></use></svg></button></header>
+      <form id="form-novo" method="dialog" novalidate>
+        <div class="campo"><label for="novo-titulo">Como se chama o seu produto ou ideia?</label><input type="text" id="novo-titulo" maxlength="80" required placeholder="Ex.: Agenda Fácil" autocomplete="off"></div>
+        <button type="submit">Começar a jornada</button>
+      </form>
+    </dialog>
+    <dialog id="dlg-compartilhar" aria-labelledby="t-compartilhar">
+      <header><h2 id="t-compartilhar">Compartilhar com um mentor</h2><button type="button" class="botao-icone" data-fechar aria-label="Fechar"><svg class="i" aria-hidden="true" focusable="false"><use href="/assets/icons/bi.svg#fechar"></use></svg></button></header>
+      <div id="compartilhar-conteudo"></div>
+    </dialog>
+  </main>
+  <footer id="rodape"></footer>
+  <script src="/js/vendor/supabase-2.45.4.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/app.js?v=313ba81873"></script>
+  <script src="/js/compartilhar.js?v=7784492b45"></script>
+  <script src="/js/painel.js?v=b5391e4c73"></script>
+</body>
+</html>

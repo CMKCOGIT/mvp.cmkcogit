@@ -1,0 +1,15 @@
+{
+  "name": "cmkcogit-mvp",
+  "private": true,
+  "version": "1.0.0",
+  "description": "mvp.cmkcogit.com.br: Jornada MVP para quem está criando o MVP de um software e para mentores. Usa o mesmo Supabase do app.cmkcogit.com.br; pagamento, IA e schema ficam no repositório do app.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "test": "node tools/versionar.mjs --check && node --test tests/*.test.js",
+    "test:e2e": "node --test tests/e2e/*.e2e.js",
+    "versionar": "node tools/versionar.mjs",
+    "tipos": "node tools/gerar-tipos.mjs"
+  }
+}

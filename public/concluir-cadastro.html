@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concluir cadastro | Jornada MVP · CMK COGIT</title>
+  <meta name="description" content="Conclua seu cadastro para usar a Jornada MVP.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" href="/assets/marca/cogit-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/assets/marca/cogit-apple-touch.png">
+  <link rel="preload" href="/assets/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/mvp.css?v=645db817cd">
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+  <main id="conteudo">
+    <header class="cabecalho-pagina"><div><p class="rotulo">Quase lá</p><h1>Concluir cadastro</h1>
+      <p>Precisamos de alguns dados antes de liberar a ferramenta. São os mesmos do app.cmkcogit.com.br.</p></div></header>
+    <p id="aviso" role="status"></p>
+    <p id="erro" role="alert"></p>
+    <form id="form-concluir" class="cartao" novalidate style="max-width:560px">
+      <div class="campo"><label for="c-nome">Nome completo</label><input type="text" id="c-nome" maxlength="120" autocomplete="name" required></div>
+      <div class="campo"><label for="c-telefone">WhatsApp <small>(opcional)</small></label><input type="tel" id="c-telefone" autocomplete="tel" inputmode="tel"></div>
+      <div class="campo" id="campo-documento"><label for="c-documento">CPF ou CNPJ</label><input type="text" id="c-documento" inputmode="numeric" autocomplete="off" maxlength="18" required>
+        <small>Usado para vincular as compras ao contratante e para a nota fiscal. Fica visível só para você e para a equipe.</small></div>
+      <label class="aceite campo" id="campo-aceite"><input type="checkbox" id="c-aceite"> <span>Li e aceito os <a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>
+      <button type="submit">Concluir e entrar</button>
+    </form>
+  </main>
+  <footer id="rodape"></footer>
+  <script src="/js/vendor/supabase-2.45.4.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/app.js?v=313ba81873"></script>
+  <script src="/js/concluir-cadastro.js?v=61cce398eb"></script>
+</body>
+</html>

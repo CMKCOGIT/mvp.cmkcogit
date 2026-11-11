@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do mentor | Jornada MVP · CMK COGIT</title>
+  <meta name="description" content="Projetos compartilhados com você.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" href="/assets/marca/cogit-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/assets/marca/cogit-apple-touch.png">
+  <link rel="preload" href="/assets/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/mvp.css?v=645db817cd">
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+  <main id="conteudo">
+    <header class="cabecalho-pagina"><div><p class="rotulo">Painel do mentor</p><h1>Projetos dos seus mentorados</h1>
+      <p>Só aparecem aqui os projetos que a pessoa compartilhou com você. Ela pode deixar de compartilhar a qualquer momento.</p></div></header>
+    <p id="aviso" role="status"></p>
+    <p id="erro" role="alert"></p>
+    <div id="lista-mentor" class="grade" aria-busy="true"><div data-esqueleto></div></div>
+  </main>
+  <footer id="rodape"></footer>
+  <script src="/js/vendor/supabase-2.45.4.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/js/app.js?v=313ba81873"></script>
+  <script src="/js/mentor.js?v=7e0b5f8b35"></script>
+</body>
+</html>
